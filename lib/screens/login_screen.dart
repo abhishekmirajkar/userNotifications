@@ -113,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-
                     SizedBox(height: 45),
                     emailField,
                     SizedBox(height: 25),
