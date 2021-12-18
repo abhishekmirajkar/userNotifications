@@ -21,6 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   UserModel loggedInUser = UserModel();
   MessageModel messageModel = MessageModel();
   List<MessageModel> messages = [];
+  List cateData = [];
+  TabController _controller;
+
 
   @override
   void initState() {
@@ -34,46 +37,69 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {});
     });
 
-    FirebaseFirestore.instance
-        .collection('messages')
-        .where("batchId", isEqualTo: loggedInUser.batchId)
-        .where("deptId", isEqualTo: loggedInUser.deptId)
-        .where("divId", isEqualTo: loggedInUser.divId)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection('category').get().then((value) {
       for (int i = 0; i < value.docs.length; i++) {
-        messageModel = messageModelFromJson(json.encode(value.docs[i].data()));
-        messages.add(messageModel);
+        cateData.add(value.docs[i].data());
       }
-      setState(() {});
+      FirebaseFirestore.instance
+          .collection('messages')
+          .where("batchId", isEqualTo: loggedInUser.batchId)
+          .where("deptId", isEqualTo: loggedInUser.deptId)
+          .where("divId", isEqualTo: loggedInUser.divId)
+          .get()
+          .then((value) {
+        for (int i = 0; i < value.docs.length; i++) {
+          messageModel = messageModelFromJson(json.encode(value.docs[i].data()));
+          messages.add(messageModel);
+        }
+        setState(() {});
+      });
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: drawer(),
-      appBar: AppBar(
-        title: const Text("Welcome"),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: ListView.builder(
-            itemCount: messages.length,
-            itemBuilder: (context, i) {
-              return messages.isEmpty
-                  ? Center(
-                      child: Text("You don't have any messages"),
-                    )
-                  : Container(
-                      child: Text(messages[i].messageData),
-                    );
-            },
-          ),
-        ),
-      ),
-    );
+    // List<String> categories = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+    return DefaultTabController(
+        length: cateData.length,
+        child: new Scaffold(
+            drawer: drawer(),
+
+            appBar: new AppBar(
+              title: const Text("Welcome"),
+              centerTitle: true,
+              bottom: new TabBar(
+                isScrollable: true,
+                tabs: List<Widget>.generate(cateData.length, (int index) {
+                  return new Tab(icon: Icon(Icons.directions_car),
+                      text: "${cateData[index]['cateName']}");
+                }),
+
+              ),
+            ),
+
+            body: new TabBarView(
+              children: List<Widget>.generate(
+                  cateData.length, (int index) {
+                return new Column(children:[
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: messages.length,
+                    itemBuilder: (context, i) {
+                      return messages[i].cateId == cateData[index]['cateId'] ? Column(
+                        children: [
+                          Text(messages[i].messageData),
+                          Text(messages[i].date),
+                          Text(messages[i].adminId),
+                        ],
+                      ): Container();
+                    },
+                  )
+                ]);
+              }),
+            )
+        ));
   }
 }
