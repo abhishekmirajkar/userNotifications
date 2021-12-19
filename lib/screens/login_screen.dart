@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
         ));
 
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
           contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
           ),
         ));
 
@@ -83,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final loginButton = Material(
       elevation: 5,
-      borderRadius: BorderRadius.circular(30),
-      color: Colors.redAccent,
+      borderRadius: BorderRadius.circular(10),
+      color: Theme.of(context).primaryColor,
       child: MaterialButton(
           padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
@@ -113,17 +113,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Text("Welcome to \nStudent Connect",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.w700,fontSize: 26),),
+                    SizedBox(height: 45),
+                    Text("You are logging in as a student",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.w700,fontSize: 14),),
                     SizedBox(height: 45),
                     emailField,
                     SizedBox(height: 25),
                     passwordField,
+                    SizedBox(height: 10),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              showAlertDialog(context);
+                            },
+                            child: Text(
+                              "Forgot Password",
+                              style: TextStyle(
+                                  color:Color(0xffFB9481),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          )
+                        ]),
                     SizedBox(height: 35),
+
                     loginButton,
-                    SizedBox(height: 15),
+                    SizedBox(height: 35),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Don't have an account? "),
+                          Text("Don't have an account? ",style: TextStyle(fontWeight: FontWeight.w700,fontSize: 14),),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -135,30 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               "SignUp",
                               style: TextStyle(
-                                  color: Colors.redAccent,
+                                  color: Color(0xffFB9481),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
                           )
                         ]),
 
-                    SizedBox(height: 15),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              showAlertDialog(context);
-                            },
-                            child: Text(
-                              "Forgot Password",
-                              style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
-                          )
-                        ])
+
                   ],
                 ),
               ),
