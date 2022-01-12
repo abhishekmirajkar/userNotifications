@@ -16,7 +16,6 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
   final _auth = FirebaseAuth.instance;
   bool hideMainForm = false;
   bool isLoading = true;
@@ -29,6 +28,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String selectedBatchId;
   String selectedDivId;
   String selectedDeptId;
+
+  bool goback = true;
 
   final _formKey = GlobalKey<FormState>();
   final firstNameEditingController = new TextEditingController();
@@ -213,6 +214,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 signUp(emailEditingController.text,
                     passwordEditingController.text);
               } else {
+                goback = false;
                 hideMainForm = !hideMainForm;
               }
             });
@@ -225,105 +227,108 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           )),
     );
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.red),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+    return WillPopScope(
+      onWillPop: () async => goback,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.red),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
-      ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator.adaptive(),
-            )
-          : Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "Welcome to \nStudent Connect",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 26),
-                          ),
-                          SizedBox(height: 45),
-                          Text(
-                            "You are Signing up as a student",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 14),
-                          ),
-                          hideMainForm
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator.adaptive(),
+              )
+            : Center(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 36.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Welcome to \nStudent Connect",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 26),
+                            ),
+                            SizedBox(height: 45),
+                            Text(
+                              "You are Signing up as a student",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 14),
+                            ),
+                            hideMainForm
+                                ? Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        subForm(),
+                                        SizedBox(height: 50,),
+                                        signUpButton,
+                                      ],
+                                    ),
+                                  )
+                                : Column(
                                     children: [
-                                      subForm(),
-                                      SizedBox(height: 50,),
+                                      SizedBox(height: 15),
+                                      firstNameField,
+                                      SizedBox(height: 20),
+                                      secondNameField,
+                                      SizedBox(height: 20),
+                                      emailField,
+                                      SizedBox(height: 20),
+                                      passwordField,
+                                      SizedBox(height: 20),
+                                      confirmPasswordField,
+                                      SizedBox(height: 20),
                                       signUpButton,
-                                    ],
-                                  ),
-                                )
-                              : Column(
-                                  children: [
-                                    SizedBox(height: 15),
-                                    firstNameField,
-                                    SizedBox(height: 20),
-                                    secondNameField,
-                                    SizedBox(height: 20),
-                                    emailField,
-                                    SizedBox(height: 20),
-                                    passwordField,
-                                    SizedBox(height: 20),
-                                    confirmPasswordField,
-                                    SizedBox(height: 20),
-                                    signUpButton,
-                                    SizedBox(height: 15),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            "Already have an account?",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 14),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              " Login in",
+                                      SizedBox(height: 15),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              "Already have an account?",
                                               style: TextStyle(
-                                                  color: Color(0xffFB9481),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15),
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14),
                                             ),
-                                          )
-                                        ]),
-                                  ],
-                                )
-                        ],
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                " Login in",
+                                                style: TextStyle(
+                                                    color: Color(0xffFB9481),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15),
+                                              ),
+                                            )
+                                          ]),
+                                    ],
+                                  )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 

@@ -125,40 +125,43 @@ class _HomeScreenState extends State<HomeScreen> {
                           cateData.length, (int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: new Column(children:[
-                            SizedBox(height: 20,),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: messages.length,
-                              itemBuilder: (context, i) {
-                                return messages[i].cateId == cateData[index]['cateId'] ? Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(minHeight: 120),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        side: new BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-                                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-                                            Text(messages[i].admin,style: TextStyle(fontWeight: FontWeight.w600),),
-                                            Text(cateData[index]['cateName'],style: TextStyle(fontWeight: FontWeight.w600)),
-                                            Text(messages[i].date,style: TextStyle(fontWeight: FontWeight.w600)),
+                          child: SingleChildScrollView(
+                            child: new Column(children:[
+                              SizedBox(height: 20,),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: messages.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, i) {
+                                  return messages[i].cateId == cateData[index]['cateId'] ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 15.0),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(minHeight: 120),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: new BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
+                                            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
+                                              Text(messages[i].admin,style: TextStyle(fontWeight: FontWeight.w600),),
+                                              Text(cateData[index]['cateName'],style: TextStyle(fontWeight: FontWeight.w600)),
+                                              Text(messages[i].date,style: TextStyle(fontWeight: FontWeight.w600)),
 
+                                            ],),
+                                            SizedBox(height: 30,),
+                                            Text(messages[i].messageData,overflow: TextOverflow.ellipsis),
                                           ],),
-                                          SizedBox(height: 30,),
-                                          Text(messages[i].messageData,overflow: TextOverflow.ellipsis),
-                                        ],),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ): Container();
-                              },
-                            )
-                          ]),
+                                  ): Container();
+                                },
+                              )
+                            ]),
+                          ),
                         );
                       }),
                     ),

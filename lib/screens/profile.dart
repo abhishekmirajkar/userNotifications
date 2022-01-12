@@ -160,8 +160,8 @@ class _ProfileState extends State<Profile> {
           IconButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                    LoginScreen()), (Route<dynamic> route) => false);
               },
               icon: Icon(Icons.power_settings_new))
         ],
