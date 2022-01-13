@@ -16,6 +16,8 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final _formKey = GlobalKey<FormState>();
+
   final _auth = FirebaseAuth.instance;
   bool hideMainForm = false;
   bool isLoading = true;
@@ -31,7 +33,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool goback = true;
 
-  final _formKey = GlobalKey<FormState>();
   final firstNameEditingController = new TextEditingController();
   final secondNameEditingController = new TextEditingController();
   final emailEditingController = new TextEditingController();
@@ -74,159 +75,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final firstNameField = TextFormField(
-        autofocus: false,
-        controller: firstNameEditingController,
-        keyboardType: TextInputType.name,
-        validator: (value) {
-          RegExp regex = new RegExp(r'^.{3,}$');
-          if (value.isEmpty) {
-            return ("First Name cannot be Empty");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid name(Min. 3 Character)");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          firstNameEditingController.text = value;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "First Name",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final secondNameField = TextFormField(
-        autofocus: false,
-        controller: secondNameEditingController,
-        keyboardType: TextInputType.name,
-        validator: (value) {
-          if (value.isEmpty) {
-            return ("Second Name cannot be Empty");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          secondNameEditingController.text = value;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.account_circle),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Second Name",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final emailField = TextFormField(
-        autofocus: false,
-        controller: emailEditingController,
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (value.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          firstNameEditingController.text = value;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final passwordField = TextFormField(
-        autofocus: false,
-        controller: passwordEditingController,
-        obscureText: true,
-        validator: (value) {
-          RegExp regex = new RegExp(r'^.{6,}$');
-          if (value.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
-          }
-        },
-        onSaved: (value) {
-          firstNameEditingController.text = value;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final confirmPasswordField = TextFormField(
-        autofocus: false,
-        controller: confirmPasswordEditingController,
-        obscureText: true,
-        validator: (value) {
-          if (confirmPasswordEditingController.text !=
-              passwordEditingController.text) {
-            return "Password don't match";
-          }
-          return null;
-        },
-        onSaved: (value) {
-          confirmPasswordEditingController.text = value;
-        },
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Confirm Password",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final signUpButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(10),
-      color: Theme.of(context).primaryColor,
-      child: MaterialButton(
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-          minWidth: MediaQuery.of(context).size.width,
-          onPressed: () {
-            setState(() {
-              if (hideMainForm) {
-                signUp(emailEditingController.text,
-                    passwordEditingController.text);
-              } else {
-                goback = false;
-                hideMainForm = !hideMainForm;
-              }
-            });
-          },
-          child: Text(
-            hideMainForm ? "SignUp" : "Next",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          )),
-    );
-
     return WillPopScope(
       onWillPop: () async => goback,
       child: Scaffold(
@@ -251,50 +99,218 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Welcome to \nStudent Connect",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 26),
-                            ),
-                            SizedBox(height: 45),
-                            Text(
-                              "You are Signing up as a student",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 14),
-                            ),
-                            hideMainForm
-                                ? Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        subForm(),
-                                        SizedBox(height: 50,),
-                                        signUpButton,
-                                      ],
-                                    ),
-                                  )
-                                : Column(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Welcome to \nStudent Connect",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 26),
+                          ),
+                          SizedBox(height: 45),
+                          Text(
+                            "You are Signing up as a student",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 14),
+                          ),
+                          hideMainForm
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      subForm(),
+                                      SizedBox(height: 50,),
+                                      Material(
+                                        elevation: 5,
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context).primaryColor,
+                                        child: MaterialButton(
+                                            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            minWidth: MediaQuery.of(context).size.width,
+                                            onPressed: () {
+                                              setState(() {
+                                                if(selectedDivId.runtimeType != Null && selectedDeptId.runtimeType != Null && selectedBatchId.runtimeType != Null ){
+                                                  signUp(emailEditingController.text,
+                                                      passwordEditingController.text);
+                                                }else{
+                                                  Fluttertoast.showToast(msg: "Please select all fields");
+                                                }
+
+                                              });
+                                            },
+                                            child: Text(
+                                              hideMainForm ? "SignUp" : "Next",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Form(
+                            key: _formKey,
+                                child: Column(
                                     children: [
                                       SizedBox(height: 15),
-                                      firstNameField,
+                                      TextFormField(
+                                          autofocus: false,
+                                          controller: firstNameEditingController,
+                                          keyboardType: TextInputType.name,
+                                          validator: (value) {
+                                            RegExp regex = new RegExp(r'^.{3,}$');
+                                            if (value.isEmpty) {
+                                              return ("First Name cannot be Empty");
+                                            }
+                                            if (!regex.hasMatch(value)) {
+                                              return ("Enter Valid name(Min. 3 Character)");
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            firstNameEditingController.text = value;
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.account_circle),
+                                            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            hintText: "First Name",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
-                                      secondNameField,
+                                      TextFormField(
+                                          autofocus: false,
+                                          controller: secondNameEditingController,
+                                          keyboardType: TextInputType.name,
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return ("Second Name cannot be Empty");
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            secondNameEditingController.text = value;
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.account_circle),
+                                            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            hintText: "Second Name",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
-                                      emailField,
+                                      TextFormField(
+                                          autofocus: false,
+                                          controller: emailEditingController,
+                                          keyboardType: TextInputType.emailAddress,
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return ("Please Enter Your Email");
+                                            }
+                                            if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                                .hasMatch(value)) {
+                                              return ("Please Enter a valid email");
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            firstNameEditingController.text = value;
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.mail),
+                                            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            hintText: "Email",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
-                                      passwordField,
+                                      TextFormField(
+                                          autofocus: false,
+                                          controller: passwordEditingController,
+                                          obscureText: true,
+                                          validator: (value) {
+                                            RegExp regex = new RegExp(r'^.{6,}$');
+                                            if (value.isEmpty) {
+                                              return ("Password is required for login");
+                                            }
+                                            if (!regex.hasMatch(value)) {
+                                              return ("Enter Valid Password(Min. 6 Character)");
+                                            }
+                                          },
+                                          onSaved: (value) {
+                                            firstNameEditingController.text = value;
+                                          },
+                                          textInputAction: TextInputAction.next,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.vpn_key),
+                                            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            hintText: "Password",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
-                                      confirmPasswordField,
+                                      TextFormField(
+                                          autofocus: false,
+                                          controller: confirmPasswordEditingController,
+                                          obscureText: true,
+                                          validator: (value) {
+                                            if (confirmPasswordEditingController.text !=
+                                                passwordEditingController.text) {
+                                              return ("Password don't match");
+                                            }
+                                            return null;
+                                          },
+                                          onSaved: (value) {
+                                            confirmPasswordEditingController.text = value;
+                                          },
+                                          textInputAction: TextInputAction.done,
+                                          decoration: InputDecoration(
+                                            prefixIcon: Icon(Icons.vpn_key),
+                                            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            hintText: "Confirm Password",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                          )),
                                       SizedBox(height: 20),
-                                      signUpButton,
+                                      Material(
+                                        elevation: 5,
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context).primaryColor,
+                                        child: MaterialButton(
+                                            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                            minWidth: MediaQuery.of(context).size.width,
+                                            onPressed: () {
+                                              setState(() {
+                                                if (hideMainForm) {
+                                                  signUp(emailEditingController.text,
+                                                      passwordEditingController.text);
+                                                } else {
+                                                  if(_formKey.currentState.validate()){
+                                                    goback = false;
+                                                    hideMainForm = !hideMainForm;
+                                                  }
+
+                                                }
+                                              });
+                                            },
+                                            child: Text(
+                                              hideMainForm ? "SignUp" : "Next",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                                            )),
+                                      ),
                                       SizedBox(height: 15),
                                       Row(
                                           mainAxisAlignment:
@@ -320,9 +336,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                             )
                                           ]),
                                     ],
-                                  )
-                          ],
-                        ),
+                                  ),
+                              )
+                        ],
                       ),
                     ),
                   ),
