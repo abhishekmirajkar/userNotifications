@@ -3,6 +3,7 @@ import 'package:college_project/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'home_screen.dart';
@@ -30,6 +31,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String selectedBatchId;
   String selectedDivId;
   String selectedDeptId;
+
+  String batchCode = '';
+  String selectedBatchCode = '';
 
   bool goback = true;
 
@@ -132,9 +136,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                             minWidth: MediaQuery.of(context).size.width,
                                             onPressed: () {
                                               setState(() {
-                                                if(selectedDivId.runtimeType != Null && selectedDeptId.runtimeType != Null && selectedBatchId.runtimeType != Null ){
-                                                  signUp(emailEditingController.text,
-                                                      passwordEditingController.text);
+                                                if(selectedDivId.runtimeType != Null && selectedDeptId.runtimeType != Null && selectedBatchId.runtimeType != Null || batchCode != ''){
+                                                  if(batchCode == selectedBatchCode){
+                                                    print('jere');
+                                                    signUp(emailEditingController.text,
+                                                        passwordEditingController.text);
+                                                  }else{
+                                                    Fluttertoast.showToast(msg: "Batch code doesn't match");
+                                                  }
                                                 }else{
                                                   Fluttertoast.showToast(msg: "Please select all fields");
                                                 }
@@ -160,6 +169,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                           autofocus: false,
                                           controller: firstNameEditingController,
                                           keyboardType: TextInputType.name,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                                          ],
                                           validator: (value) {
                                             RegExp regex = new RegExp(r'^.{3,}$');
                                             if (value.isEmpty) {
@@ -187,6 +199,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                           autofocus: false,
                                           controller: secondNameEditingController,
                                           keyboardType: TextInputType.name,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+                                          ],
                                           validator: (value) {
                                             if (value.isEmpty) {
                                               return ("Second Name cannot be Empty");
@@ -293,8 +308,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                             onPressed: () {
                                               setState(() {
                                                 if (hideMainForm) {
-                                                  signUp(emailEditingController.text,
-                                                      passwordEditingController.text);
+                                                  if(batchCode == selectedBatchCode){
+                                                    signUp(emailEditingController.text,
+                                                        passwordEditingController.text);
+                                                  }
+
                                                 } else {
                                                   if(_formKey.currentState.validate()){
                                                     goback = false;
@@ -454,6 +472,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 setState(() {
                   selectedBatchId = value.toString();
                   selectedBatch = value.toString();
+                  for(int i = 0 ; i < batchData.length ; i++){
+                    if(batchData[i]['batchId'] == selectedBatchId){
+                      selectedBatchCode = batchData[i]['batchCode'];
+                    }
+                  }
                 });
               }),
         ),
@@ -512,6 +535,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 });
               }),
         ),
+
+        SizedBox(height: 20,),
+        TextFormField(
+            autofocus: false,
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              RegExp regex = new RegExp(r'^.{6,}$');
+              if (value.isEmpty) {
+                return ("Code cannot be Empty");
+              }
+              if (!regex.hasMatch(value)) {
+                return ("Enter Valid Code");
+              }
+              return null;
+            },
+            onChanged: (value) {
+              batchCode = value;
+            },
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.qr_code),
+              contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+              hintText: "Batch Code",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            )),
+        SizedBox(height: 20),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:college_project/screens/home_screen.dart';
 import 'package:college_project/screens/login_screen.dart';
+import 'package:college_project/screens/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -132,7 +133,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: kPrimaryColor,
       ),
       debugShowCheckedModeBanner: false,
-      home: FirebaseAuth.instance.currentUser != null ? HomeScreen () : LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
